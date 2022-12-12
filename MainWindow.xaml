@@ -13,45 +13,62 @@
                 <TabItem.Header>
                     <Image Width="20" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\novel.png"/>
                 </TabItem.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="30"/>
-                        <ColumnDefinition Width="20"/>
-                    </Grid.ColumnDefinitions>
+                <Grid x:Name="mainNovelGrid">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="1" Grid.Row="1" FontSize="36" Grid.ColumnSpan="2"  
+                    <Grid x:Name="novelSearchGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="1" Grid.Row="1" FontSize="36" Grid.ColumnSpan="2"  
                    Text="Light Novels"
                    Margin="0,0,0,10"/>
-                    <!--Search on left-->
-                    <TextBox x:Name="searchNovelBox" Grid.Column="5" Grid.Row="1" Height="40" Width="150" Grid.ColumnSpan="2"/>
-                    <!--Text block for disapearing text-->
-                    <TextBlock Grid.Column="5" Grid.Row="1" IsHitTestVisible="False" Text="Search Novel..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
-                        <TextBlock.Style>
-                            <Style TargetType="{x:Type TextBlock}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=searchNovelBox}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    
-                    <Image x:Name="searchNovelBtn" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\search.png" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="searchNovelBtn_MouseDown"></Image>
+                        <!--Search on left-->
+                        <TextBox x:Name="searchNovelBox" Grid.Column="5" Grid.Row="1" Height="40" Width="150" Grid.ColumnSpan="2"/>
+                        <!--Text block for disapearing text-->
+                        <TextBlock Grid.Column="5" Grid.Row="1" IsHitTestVisible="False" Text="Search Novel..." VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=searchNovelBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <Image x:Name="searchNovelBtn" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\search.png" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="searchNovelBtn_MouseDown"></Image>
+                    </Grid>
+                    <Grid Grid.Row="1" x:Name="novelResultsGrid">
+                        <ScrollViewer x:Name="novelScroll">
+                            
+                        </ScrollViewer>
+                    </Grid>
+                    <!--<StackPanel Orientation="Horizontal">
+                        <Image MaxHeight="20" MaxWidth="20" Source="C:\Users\charl\Documents\Programming\C#\WPF\MyWPFApp1\Charles.png"/>
+                        <TextBlock Text="{Binding FirstName}"/>
+                        <TextBlock Text=" "/>
+                        <TextBlock Text="{Binding LastName}"/>
+                    </StackPanel>-->
                 </Grid>
             </TabItem>
             <!--Manga-->
