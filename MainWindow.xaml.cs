@@ -33,87 +33,87 @@ namespace AniTool
     {
         NovelFetcher fetcher;
         NovelSearcher searcher;
-        //store novels we got for later use
-        Dictionary<int, string> searchResults;
 
         public MainWindow()
         {
             InitializeComponent();
+            PageSetup();
             fetcher = new();
             fetcher.SetWorkDir(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\Novels", false);
 
             searcher = new();
-            searchResults = new();
             Closing += OnWindowClosing;
 
             if (!Directory.Exists(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages"))
                 Directory.CreateDirectory(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
         }
 
+        private void PageSetup()
+        {
+            //TabItem tabItem = new();
+            //tabItem.Header = new { Width = 20, Source = new BitmapImage(new Uri(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\novel.png")) };
+
+            //Grid mainNovelGrid = new();
+            //mainNovelGrid.Name = "mainNovelGrid";
+            //mainNovelGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            //mainNovelGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+
+            //Grid novelSearchGrid = new();
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(20) });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(30) });
+            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(20) });
+
+            //novelSearchGrid.RowDefinitions.Add(new() { Height = new GridLength(20) });
+            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
+            //novelSearchGrid.RowDefinitions.Add(new() { Height = new GridLength(20) });
+
+            ////inside 1 start
+            //TextBlock novelBlock = new();
+            //novelBlock.SetValue(Grid.ColumnProperty, 1);
+            //novelBlock.SetValue(Grid.RowProperty, 1);
+            //novelBlock.SetValue(TextBlock.FontSizeProperty, 36);
+            //novelBlock.SetValue(Grid.ColumnSpanProperty, 2);
+            //novelBlock.Text = "Light Novels";
+            //novelBlock.Margin = new(0, 0, 0, 10);
+
+            //TextBox searchNovelBox = new();
+            //searchNovelBox.SetValue(Grid.ColumnProperty, 5);
+            //searchNovelBox.SetValue(Grid.RowProperty, 1);
+            //searchNovelBox.Height = 40;
+            //searchNovelBox.Width = 150;
+            //searchNovelBox.SetValue(Grid.ColumnSpanProperty, 2);
+            //searchNovelBox.KeyDown += searchNovelBox_KeyDown;
+            //searchNovelBox.Name = "searchNovelBox";
+
+            //TextBlock searchBlock = new();
+            //searchBlock.SetValue(Grid.ColumnProperty, 5);
+            //searchBlock.SetValue(Grid.RowProperty, 1);
+            //searchBlock.IsHitTestVisible = false;
+            //searchBlock.Text = "Search Novel...";
+            //searchBlock.VerticalAlignment = VerticalAlignment.Center;
+            //searchBlock.HorizontalAlignment = HorizontalAlignment.Left;
+            //searchBlock.Margin = new(10, 0, 0, 0);
+            //searchBlock.Foreground = Brushes.DarkGray;
+
+            //Style style = new();
+            //style.TargetType = typeof(TextBlock);
+            //style.Setters.Add(new Setter() { Property = VisibilityProperty, Value = Visibility.Collapsed });
+            //style.Triggers.Add(new DataTrigger() { Binding = new Binding() { ElementName = "searchNovelBox}" } });
+
+
+        }
+
         private void SearchNovelBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            try
-            {
-                searcher.Search(1, searchNovelBox.Text);
-            }
-            catch(WeebLibException ex)
-            {
-                MessageBox.Show(ex.nonStackMessage);
-                return;
-            }
-            
-            WrapPanel mainStack = new();
-            mainStack.Orientation = Orientation.Horizontal;
-            novelScroll.Content = mainStack;
-            int number = 0;
-            searcher.getResults().ForEach((result) =>
-            {
-                string type = result.image.Split('.').Last();
-                DownloadImage(number, type, result.image);
-                
-                StackPanel panel = new();
-                panel.Orientation = Orientation.Vertical;
-                panel.Margin = new Thickness(0, 0, 0, 30);
-
-                BitmapImage bitImage = new BitmapImage(new Uri(@$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}"));
-                Image image = new Image() { Source = bitImage, Width = 100, Height = 100, Name = $"image{number}", Cursor = Cursors.Hand };
-                image.Stretch = Stretch.Uniform;
-                image.MouseDown += NovelImage_MouseDown;
-
-                panel.Children.Add(image);
-                if(number %2 == 0)
-                {
-                    panel.Children.Add(new TextBlock() { Text = result.name + "  ", Foreground = Brushes.Blue });
-                }
-                else
-                {
-                    panel.Children.Add(new TextBlock() { Text = result.name + "  ", Foreground = Brushes.Orange });
-                }
-                searchResults.Add(number, result.name);
-                
-                mainStack.Children.Add(panel);
-                ++number;
-            });
-        }
-
-        private void NovelImage_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Image src = (Image)sender;
-            int number = int.Parse(src.Name.Substring(5));
-            string text = fetcher.Fetch(searcher.getResults()[number], 1, 10, false);
-        }
-
-        private static void LoadingNovel()
-        {
-
-        }
-
-        private static void DownloadImage(int number, string type, string url)
-        {
-            using (WebClient client = new WebClient())
-            {
-                client.DownloadFile(new Uri(url), @$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}");
-            }
+            mainFrame.Content = new NovelSearchPage(ref fetcher, ref searcher, ref statusText, searchNovelBox.Text, ref mainFrame);
         }
 
         private static void OnWindowClosing(object sender, CancelEventArgs e)
