@@ -48,22 +48,25 @@ namespace AniTool
             WrapPanel mainStack = new();
             mainStack.Orientation = Orientation.Horizontal;
             novelScroll.Content = mainStack;
-
+            status.Text = "Loading chapters";
             BackgroundWorker worker = new BackgroundWorker();
-            status.Text = "Loading chapters...";
             worker.DoWork += (sender, e) =>
             {
-                this.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     for (int i = 0; i < searcher.Results()[indexOfNovel].latest; ++i)
                     {
                         if (i % 2 == 0)
                         {
-                            mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Blue });
+                            var text = new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Blue, Cursor = Cursors.Hand };
+                            text.PreviewMouseDown += NovelChapter_MouseDown;
+                            mainStack.Children.Add(text);
                         }
                         else
                         {
-                            mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Orange });
+                            var text = new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Orange, Cursor = Cursors.Hand };
+                            text.PreviewMouseDown += NovelChapter_MouseDown;
+                            mainStack.Children.Add(text);
 
                         }
                     }
@@ -71,7 +74,30 @@ namespace AniTool
                     status.Text = $"{searcher.Results()[indexOfNovel].name} - chapters loaded";
                 });
             };
+
+            worker.ProgressChanged += (sender, e) =>
+            {
+                // Update the WPF user interface with the progress
+                if (e.ProgressPercentage > 30) status.Text = "Loading chapters.";
+                else if (e.ProgressPercentage > 60) status.Text = "Loading chapters..";
+                else if (e.ProgressPercentage > 80) status.Text = "Loading chapters...";
+            };
+
             worker.RunWorkerAsync();
+        }
+
+        private void NovelChapter_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textBlock = (TextBlock)sender;
+            int number = int.Parse(textBlock.Text.Substring(8));
+
+            string text = fetcher.Fetch(searcher.Results()[indexOfNovel], number, 1, false);
+            LoadChapter(text, number);
+        }
+
+        private void LoadChapter(string text, int chapter)
+        {
+            NavigationService.Content = new ReadNovelPage(ref fetcher, ref searcher, indexOfNovel, text, chapter, ref status);
         }
     }
 }

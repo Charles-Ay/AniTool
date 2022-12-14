@@ -64,22 +64,29 @@ namespace AniTool
             status.Text = $"Searching for " + search + "...";
 
             //Worker thread to search for novels
-            BackgroundWorker worker = new BackgroundWorker();
+            BackgroundWorker worker = new BackgroundWorker();   
             worker.DoWork += (sender, e) =>
             {
                 try
                 {
                     if (!searcher.Search(1, search))
                     {
-                        throw new Exception("No results found");
+                        Dispatcher.Invoke((Action)delegate
+                        {
+                            status.Text = "No results found";
+                        });
+                        return;
                     }
                 }
                 catch (WeebLibException ex)
                 {
-                    MessageBox.Show(ex.nonStackMessage);
+                    Dispatcher.Invoke((Action)delegate
+                    {
+                        status.Text = "No results found";
+                    });
                     return;
                 }
-                Application.Current.Dispatcher.Invoke((Action)delegate
+                Dispatcher.Invoke((Action)delegate
                 {
                     WrapPanel mainStack = new();
                     mainStack.Orientation = Orientation.Horizontal;
@@ -125,7 +132,8 @@ namespace AniTool
         {
             Image src = (Image)sender;
             int number = int.Parse(src.Name.Substring(5));
-            //call a fetch on a huge number that we wont hit so that we can get all the chapeters avalible
+            
+            //call a fetch on a huge number that we wont hit so that we can get all the chapters avalible
             fetcher.Fetch(searcher.Results()[number], 1, 20000, false);
             LoadingNovel(number, src);
         }
