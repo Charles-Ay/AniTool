@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,17 +27,19 @@ namespace AniTool
         NovelFetcher fetcher;
         NovelSearcher searcher;
         int indexOfNovel;
-        TextBlock statusText;
-        Frame mainFrame;
+        Frame NavigationService;
+        Image image;
+        TextBlock status;
 
-        public ChapterSelectionPage(ref NovelFetcher fetcher, ref NovelSearcher searcher, int indexOfNovel, ref TextBlock statusText, ref Frame mainFrame)
+        public ChapterSelectionPage(ref NovelFetcher fetcher, ref NovelSearcher searcher, int indexOfNovel, ref Frame NavigationService, Image image, ref TextBlock status)
         {
             InitializeComponent();
             this.fetcher = fetcher;
             this.searcher = searcher;
             this.indexOfNovel = indexOfNovel;
-            this.statusText = statusText;
-            this.mainFrame = mainFrame;
+            this.NavigationService = NavigationService;
+            this.image = image;
+            this.status = status;
             LoadChapterSelection();
         }
 
@@ -44,18 +48,30 @@ namespace AniTool
             WrapPanel mainStack = new();
             mainStack.Orientation = Orientation.Horizontal;
             novelScroll.Content = mainStack;
-            for (int i = 0; i < searcher.getResults()[indexOfNovel].latest; ++i)
-            {
-                if (i % 2 == 0)
-                {
-                    mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Blue });
-                }
-                else
-                {
-                    mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Orange });
 
-                }
-            }
+            BackgroundWorker worker = new BackgroundWorker();
+            status.Text = "Loading chapters...";
+            worker.DoWork += (sender, e) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    for (int i = 0; i < searcher.Results()[indexOfNovel].latest; ++i)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Blue });
+                        }
+                        else
+                        {
+                            mainStack.Children.Add(new TextBlock() { Text = $"Chapter {i + 1}", Margin = new Thickness(10, 10, 10, 10), FontSize = 20, TextWrapping = TextWrapping.Wrap, Foreground = Brushes.Orange });
+
+                        }
+                    }
+                    novelImage.Source = image.Source;
+                    status.Text = $"{searcher.Results()[indexOfNovel].name} - chapters loaded";
+                });
+            };
+            worker.RunWorkerAsync();
         }
     }
 }

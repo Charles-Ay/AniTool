@@ -23,16 +23,34 @@ using System.Xml.Linq;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace AniTool
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         NovelFetcher fetcher;
         NovelSearcher searcher;
+        public string? _status = "";
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public string? Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                OnPropertyChanged("Status");
+            }
+        }
 
         public MainWindow()
         {
@@ -46,74 +64,20 @@ namespace AniTool
 
             if (!Directory.Exists(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages"))
                 Directory.CreateDirectory(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
+
+            DataContext = this;
+            Binding binding = new Binding("Status");
+            statusText.SetBinding(TextBlock.TextProperty, binding);
         }
 
-        private void PageSetup()
+        public virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            //TabItem tabItem = new();
-            //tabItem.Header = new { Width = 20, Source = new BitmapImage(new Uri(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\novel.png")) };
-
-            //Grid mainNovelGrid = new();
-            //mainNovelGrid.Name = "mainNovelGrid";
-            //mainNovelGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            //mainNovelGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-
-            //Grid novelSearchGrid = new();
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(20) });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(1, GridUnitType.Star) });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = GridLength.Auto });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(30) });
-            //novelSearchGrid.ColumnDefinitions.Add(new() { Width = new GridLength(20) });
-
-            //novelSearchGrid.RowDefinitions.Add(new() { Height = new GridLength(20) });
-            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            //novelSearchGrid.RowDefinitions.Add(new() { Height = GridLength.Auto });
-            //novelSearchGrid.RowDefinitions.Add(new() { Height = new GridLength(20) });
-
-            ////inside 1 start
-            //TextBlock novelBlock = new();
-            //novelBlock.SetValue(Grid.ColumnProperty, 1);
-            //novelBlock.SetValue(Grid.RowProperty, 1);
-            //novelBlock.SetValue(TextBlock.FontSizeProperty, 36);
-            //novelBlock.SetValue(Grid.ColumnSpanProperty, 2);
-            //novelBlock.Text = "Light Novels";
-            //novelBlock.Margin = new(0, 0, 0, 10);
-
-            //TextBox searchNovelBox = new();
-            //searchNovelBox.SetValue(Grid.ColumnProperty, 5);
-            //searchNovelBox.SetValue(Grid.RowProperty, 1);
-            //searchNovelBox.Height = 40;
-            //searchNovelBox.Width = 150;
-            //searchNovelBox.SetValue(Grid.ColumnSpanProperty, 2);
-            //searchNovelBox.KeyDown += searchNovelBox_KeyDown;
-            //searchNovelBox.Name = "searchNovelBox";
-
-            //TextBlock searchBlock = new();
-            //searchBlock.SetValue(Grid.ColumnProperty, 5);
-            //searchBlock.SetValue(Grid.RowProperty, 1);
-            //searchBlock.IsHitTestVisible = false;
-            //searchBlock.Text = "Search Novel...";
-            //searchBlock.VerticalAlignment = VerticalAlignment.Center;
-            //searchBlock.HorizontalAlignment = HorizontalAlignment.Left;
-            //searchBlock.Margin = new(10, 0, 0, 0);
-            //searchBlock.Foreground = Brushes.DarkGray;
-
-            //Style style = new();
-            //style.TargetType = typeof(TextBlock);
-            //style.Setters.Add(new Setter() { Property = VisibilityProperty, Value = Visibility.Collapsed });
-            //style.Triggers.Add(new DataTrigger() { Binding = new Binding() { ElementName = "searchNovelBox}" } });
-
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void SearchNovelBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            mainFrame.Content = new NovelSearchPage(ref fetcher, ref searcher, ref statusText, searchNovelBox.Text, ref mainFrame);
+            NavigationService.Content = new NovelSearchPage(ref fetcher, ref searcher, searchNovelBox.Text, ref NavigationService, ref statusText);
         }
 
         private static void OnWindowClosing(object sender, CancelEventArgs e)
@@ -128,9 +92,30 @@ namespace AniTool
 #endif
         }
 
+        public void UpdateStatusText(string text)
+        {
+            Status = text;
+        }
+
         private void searchNovelBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter) searchNovelBtn.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.MouseDownEvent });
+        }
+
+        private void Next_Btn(object sender, RoutedEventArgs e)
+        {
+            if (this.NavigationService.CanGoForward)
+                NavigationService.GoForward();
+            //else
+            //    NavigationService.Navigate(new MainWindow());
+        }
+
+        private void Back_Btn(object sender, RoutedEventArgs e)
+        {
+            if (this.NavigationService.CanGoBack)
+                NavigationService.GoBack();
+            //else
+            //    NavigationService.Navigate(this);
         }
     }
 }
