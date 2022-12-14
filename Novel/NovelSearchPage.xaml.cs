@@ -50,6 +50,9 @@ namespace AniTool
             SearchResults();
         }
         
+        /// <summary>
+        /// Clear the images in the folder
+        /// </summary>
         private void ClearImages()
         {
             System.IO.DirectoryInfo di = new(@$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
@@ -59,6 +62,9 @@ namespace AniTool
             }
         }
 
+        /// <summary>
+        /// Search for the novel
+        /// </summary>
         private void SearchResults()
         {
             status.Text = $"Searching for " + search + "...";
@@ -86,6 +92,7 @@ namespace AniTool
                     });
                     return;
                 }
+                
                 Dispatcher.Invoke((Action)delegate
                 {
                     WrapPanel mainStack = new();
@@ -128,6 +135,11 @@ namespace AniTool
             worker.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Get the image clicked on
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NovelImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Image src = (Image)sender;
@@ -138,11 +150,22 @@ namespace AniTool
             LoadingNovel(number, src);
         }
 
+        /// <summary>
+        /// Load the novel
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="image"></param>
         private void LoadingNovel(int number, Image image)
         {
             NavigationService.Content = new ChapterSelectionPage(ref fetcher, ref searcher, number, ref NavigationService, image, ref status);
         }
 
+        /// <summary>
+        /// Download the image
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="type"></param>
+        /// <param name="url"></param>
         private void DownloadImage(int number, string type, string url)
         {
             using (WebClient client = new WebClient())
@@ -150,8 +173,12 @@ namespace AniTool
                 client.DownloadFile(new Uri(url), @$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}");
             }
         }
-        
-        //prevents file locking
+
+        /// <summary>
+        /// Get the image from the stream. Need this to prevents file from locking
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private BitmapImage GetImageFromStream(string path)
         {
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))

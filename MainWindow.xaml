@@ -69,7 +69,7 @@
                     </Grid>
                     <Grid VerticalAlignment="Top" Height="20" Background="White">
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="Back" Click="Back_Btn"/>
+                            <Button Content="Back" Margin="10, 0, 10, 0" Click="Back_Btn"/>
                             <Button Content="Next" Click="Next_Btn"/>
                         </StackPanel>
                     </Grid>

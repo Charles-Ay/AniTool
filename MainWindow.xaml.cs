@@ -61,6 +61,7 @@ namespace AniTool
             searcher = new();
             Closing += OnWindowClosing;
 
+            //Create image folder
             if (!Directory.Exists(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages"))
                 Directory.CreateDirectory(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
 
@@ -69,16 +70,30 @@ namespace AniTool
             statusText.SetBinding(TextBlock.TextProperty, binding);
         }
 
+        /// <summary>
+        /// Used to check if status text has changed
+        /// </summary>
+        /// <param name="propertyName"></param>
         public virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Onlick for search button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SearchNovelBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
             NavigationService.Content = new NovelSearchPage(ref fetcher, ref searcher, searchNovelBox.Text, ref NavigationService, ref statusText);
         }
 
+        /// <summary>
+        /// Clean up folders on close
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void OnWindowClosing(object sender, CancelEventArgs e)
         {
 #if DEBUG
@@ -91,22 +106,41 @@ namespace AniTool
 #endif
         }
 
+        /// <summary>
+        /// Update status text
+        /// </summary>
+        /// <param name="text"></param>
         public void UpdateStatusText(string text)
         {
             Status = text;
         }
 
+        /// <summary>
+        /// Enter button for search box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void searchNovelBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter) searchNovelBtn.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.MouseDownEvent });
         }
 
+        /// <summary>
+        /// Onclick for next page button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Next_Btn(object sender, RoutedEventArgs e)
         {
             if (this.NavigationService.CanGoForward)
                 NavigationService.GoForward();
         }
 
+        /// <summary>
+        /// Onclick for previous page button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Back_Btn(object sender, RoutedEventArgs e)
         {
             if (this.NavigationService.CanGoBack)
