@@ -55,7 +55,6 @@ namespace AniTool
         public MainWindow()
         {
             InitializeComponent();
-            PageSetup();
             fetcher = new();
             fetcher.SetWorkDir(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\Novels", false);
 
