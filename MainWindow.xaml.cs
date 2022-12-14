@@ -105,16 +105,12 @@ namespace AniTool
         {
             if (this.NavigationService.CanGoForward)
                 NavigationService.GoForward();
-            //else
-            //    NavigationService.Navigate(new MainWindow());
         }
 
         private void Back_Btn(object sender, RoutedEventArgs e)
         {
             if (this.NavigationService.CanGoBack)
                 NavigationService.GoBack();
-            //else
-            //    NavigationService.Navigate(this);
         }
     }
 }
