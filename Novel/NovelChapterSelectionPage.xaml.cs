@@ -27,7 +27,7 @@ namespace AniTool
         NovelFetcher fetcher;
         NovelSearcher searcher;
         int indexOfNovel;
-        Frame NavigationService;
+        new Frame NavigationService;
         Image image;
         TextBlock status;
 
@@ -43,12 +43,17 @@ namespace AniTool
             LoadChapterSelection();
         }
 
+        /// <summary>
+        /// Loads the chapter selection page
+        /// </summary>
         public void LoadChapterSelection()
         {
             WrapPanel mainStack = new();
             mainStack.Orientation = Orientation.Horizontal;
             novelScroll.Content = mainStack;
             status.Text = "Loading chapters";
+
+            //Worker to retrieve the chapters in the background
             BackgroundWorker worker = new BackgroundWorker();
             worker.DoWork += (sender, e) =>
             {
@@ -75,6 +80,7 @@ namespace AniTool
                 });
             };
 
+            //Update message
             worker.ProgressChanged += (sender, e) =>
             {
                 // Update the WPF user interface with the progress
@@ -86,6 +92,11 @@ namespace AniTool
             worker.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Event handler for when a chapter is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void NovelChapter_MouseDown(object sender, MouseButtonEventArgs e)
         {
             TextBlock textBlock = (TextBlock)sender;
@@ -95,6 +106,11 @@ namespace AniTool
             LoadChapter(text, number);
         }
 
+        /// <summary>
+        /// Load the selected chapter
+        /// </summary>
+        /// <param name="text">text for the chapter</param>
+        /// <param name="chapter">Chapter number</param>
         private void LoadChapter(string text, int chapter)
         {
             NavigationService.Content = new ReadNovelPage(ref fetcher, ref searcher, indexOfNovel, text, chapter, ref status);

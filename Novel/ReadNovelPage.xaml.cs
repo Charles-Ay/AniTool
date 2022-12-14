@@ -40,26 +40,41 @@ namespace AniTool
             LoadText();
         }
 
+        /// <summary>
+        /// Update status and load text for chapter into TextBlock
+        /// </summary>
         private void LoadText()
         {
             status.Text = "Chapter: " + chapter;
             novelText.Text = text;
         }
         
+        /// <summary>
+        /// Onlick for next chapter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Next_Btn(object sender, RoutedEventArgs e)
         {
             if (chapter < searcher.Results()[indexOfNovel].latest)
             {
+                scroller.ScrollToTop();
                 ++chapter;
                 text = fetcher.Fetch(searcher.Results()[indexOfNovel], chapter, 1, false);
                 LoadText();
             }
         }
 
+        /// <summary>
+        /// Onlick for pervious chapter
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Back_Btn(object sender, RoutedEventArgs e)
         {
             if (chapter > 1)
             {
+                scroller.ScrollToTop();
                 --chapter;
                 text = fetcher.Fetch(searcher.Results()[indexOfNovel], chapter, 1, false);
                 LoadText();

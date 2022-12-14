@@ -20,7 +20,7 @@
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">
-            <ScrollViewer>
+            <ScrollViewer x:Name="scroller">
                 <TextBlock x:Name="novelText" TextWrapping="Wrap" FontFamily="Calibri" FontSize="18"></TextBlock>
             </ScrollViewer>
         </Grid>
