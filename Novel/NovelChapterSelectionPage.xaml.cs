@@ -22,7 +22,7 @@ namespace AniTool
     /// <summary>
     /// Interaction logic for ChapterSelectionPage.xaml
     /// </summary>
-    public partial class ChapterSelectionPage : Page
+    public partial class NovelChapterSelectionPage : Page
     {
         NovelFetcher fetcher;
         NovelSearcher searcher;
@@ -31,7 +31,7 @@ namespace AniTool
         Image image;
         TextBlock status;
 
-        public ChapterSelectionPage(ref NovelFetcher fetcher, ref NovelSearcher searcher, int indexOfNovel, ref Frame NavigationService, Image image, ref TextBlock status)
+        public NovelChapterSelectionPage(ref NovelFetcher fetcher, ref NovelSearcher searcher, int indexOfNovel, ref Frame NavigationService, Image image, ref TextBlock status)
         {
             InitializeComponent();
             this.fetcher = fetcher;

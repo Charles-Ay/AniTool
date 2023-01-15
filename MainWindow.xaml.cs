@@ -25,6 +25,9 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using AniTool.Manga;
+using WeebLib.Manga.Parser;
+using WeebLib.Manga.Retrieval;
 
 namespace AniTool
 {
@@ -33,13 +36,30 @@ namespace AniTool
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        NovelFetcher fetcher;
-        NovelSearcher searcher;
+        NovelFetcher novelFetcher;
+        NovelSearcher novelSearcher;
+        
         public string? _status = "";
+
+        MangaFetcher mangaFetcher;
+        MangaSearcher mangaSearcher;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public string? Status
+        public string? novelStatus
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+
+        public string? mangaStatus
         {
             get
             {
@@ -55,10 +75,15 @@ namespace AniTool
         public MainWindow()
         {
             InitializeComponent();
-            fetcher = new();
-            fetcher.SetWorkDir(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\Novels", false);
+            
+            novelFetcher = new();
+            novelFetcher.SetWorkDir(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\Novels", false);
+            novelSearcher = new();
 
-            searcher = new();
+            mangaFetcher = new();
+            mangaFetcher.SetWorkDir(@"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\Manga", false);
+            mangaSearcher = new();
+
             Closing += OnWindowClosing;
 
             //Create image folder
@@ -67,7 +92,7 @@ namespace AniTool
 
             DataContext = this;
             Binding binding = new Binding("Status");
-            statusText.SetBinding(TextBlock.TextProperty, binding);
+            novelStatusText.SetBinding(TextBlock.TextProperty, binding);
         }
 
         /// <summary>
@@ -80,13 +105,25 @@ namespace AniTool
         }
 
         /// <summary>
-        /// Onlick for search button
+        /// Onlick for novel search button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SearchNovelBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            NavigationService.Content = new NovelSearchPage(ref fetcher, ref searcher, searchNovelBox.Text, ref NavigationService, ref statusText);
+            if(novelsTab.IsSelected)
+                NovelNavigationService.Content = new NovelSearchPage(ref novelFetcher, ref novelSearcher, searchNovelBox.Text, ref NovelNavigationService, ref novelStatusText); ;
+        }
+
+        /// <summary>
+        /// Onlick for search button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SearchMangaBtn_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (mangaTab.IsSelected)
+                MangaNavigationService.Content = new MangaSearchPage(ref mangaFetcher, ref mangaSearcher, searchMangaBox.Text, ref MangaNavigationService, ref mangaStatusText);
         }
 
         /// <summary>
@@ -107,12 +144,13 @@ namespace AniTool
         }
 
         /// <summary>
-        /// Update status text
+        /// Enter button for search box
         /// </summary>
-        /// <param name="text"></param>
-        public void UpdateStatusText(string text)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void searchNovelBox_KeyDown(object sender, KeyEventArgs e)
         {
-            Status = text;
+            if (e.Key == Key.Enter && novelsTab.IsSelected) searchNovelBtn.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.MouseDownEvent });
         }
 
         /// <summary>
@@ -120,9 +158,9 @@ namespace AniTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void searchNovelBox_KeyDown(object sender, KeyEventArgs e)
+        private void searchMangaBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter) searchNovelBtn.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.MouseDownEvent });
+            if (e.Key == Key.Enter && mangaTab.IsSelected) searchMangaBtn.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Left) { RoutedEvent = Button.MouseDownEvent });
         }
 
         /// <summary>
@@ -130,10 +168,10 @@ namespace AniTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Next_Btn(object sender, RoutedEventArgs e)
+        private void NovelNext_Btn(object sender, RoutedEventArgs e)
         {
-            if (this.NavigationService.CanGoForward)
-                NavigationService.GoForward();
+            if (NovelNavigationService.CanGoForward)
+                NovelNavigationService.GoForward();
         }
 
         /// <summary>
@@ -141,10 +179,32 @@ namespace AniTool
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Back_Btn(object sender, RoutedEventArgs e)
+        private void NovelBack_Btn(object sender, RoutedEventArgs e)
         {
-            if (this.NavigationService.CanGoBack)
-                NavigationService.GoBack();
+            if (NovelNavigationService.CanGoBack)
+                NovelNavigationService.GoBack();
+        }
+
+        /// <summary>
+        /// Onclick for next page button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MangaNext_Btn(object sender, RoutedEventArgs e)
+        {
+            if (MangaNavigationService.CanGoForward)
+                MangaNavigationService.GoForward();
+        }
+
+        /// <summary>
+        /// Onclick for previous page button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MangaBack_Btn(object sender, RoutedEventArgs e)
+        {
+            if (MangaNavigationService.CanGoBack)
+                MangaNavigationService.GoBack();
         }
     }
 }

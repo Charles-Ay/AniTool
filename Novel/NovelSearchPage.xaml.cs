@@ -34,7 +34,7 @@ namespace AniTool
         //store novels we got for later use
         Dictionary<int, string> searchResults;
         string search;
-        Frame NavigationService;
+        new Frame NavigationService;
         TextBlock status;
 
         public NovelSearchPage(ref NovelFetcher fetcher, ref NovelSearcher searcher, string search, ref Frame NavigationService, ref TextBlock status)
@@ -53,12 +53,19 @@ namespace AniTool
         /// <summary>
         /// Clear the images in the folder
         /// </summary>
-        private void ClearImages()
+        private void ClearFilesAndCreateDirectory()
         {
             System.IO.DirectoryInfo di = new(@$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
-            foreach (FileInfo file in di.GetFiles())
+            if (!di.Exists)
             {
-                file.Delete();
+                di.Create();
+            }
+            else
+            {
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
             }
         }
 
@@ -84,7 +91,7 @@ namespace AniTool
                         return;
                     }
                 }
-                catch (WeebLibException ex)
+                catch (WeebLibException)
                 {
                     Dispatcher.Invoke((Action)delegate
                     {
@@ -99,7 +106,7 @@ namespace AniTool
                     mainStack.Orientation = Orientation.Horizontal;
                     novelScroll.Content = mainStack;
                     int number = 0;
-                    ClearImages();
+                    ClearFilesAndCreateDirectory();
                     searcher.Results().ForEach((result) =>
                     {
                         string type = result.image.Split('.').Last();
@@ -157,7 +164,7 @@ namespace AniTool
         /// <param name="image"></param>
         private void LoadingNovel(int number, Image image)
         {
-            NavigationService.Content = new ChapterSelectionPage(ref fetcher, ref searcher, number, ref NavigationService, image, ref status);
+            NavigationService.Content = new NovelChapterSelectionPage(ref fetcher, ref searcher, number, ref NavigationService, image, ref status);
         }
 
         /// <summary>
@@ -168,7 +175,7 @@ namespace AniTool
         /// <param name="url"></param>
         private void DownloadImage(int number, string type, string url)
         {
-            using (WebClient client = new WebClient())
+            using (WebClient client = new())
             {
                 client.DownloadFile(new Uri(url), @$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}");
             }
