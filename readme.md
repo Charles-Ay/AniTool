@@ -7,7 +7,13 @@
 
 __Made using [WeebLib](https://github.com/Charles-Ay/WeebLib)__
 
+### Novel Demo:
+![](./Demo/Novel_Demo.gif)
 
+### Manga Demo:
+![](./Demo/Manga_Demo.gif)
+
+__Manga is slow so please wait like 30s when using as data takes to be fetched/created__
 
 #### Windows:
 
@@ -27,7 +33,7 @@ Gross. jkjk. I'm too poor to afford one so can't make a compatable version :(
 - Can go back or forward
 - Can request next chapter
 
-__Manga maybe slow so please wait like 30s when using for data to be created__
+
 
 ### Disclaimer
 
