@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 #Images
-NovelImages/
-Novels/
-Manga/
-MangaImages/
+resources/NovelImages/
+resources/Novels/
+resources/Manga/
+resources/MangaImages/
