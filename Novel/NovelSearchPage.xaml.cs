@@ -21,6 +21,7 @@ using WeebLib.Interfaces;
 using WeebLib.Novel.Parser;
 using WeebLib.Novel.Retrieval;
 using WeebLib.WeeLibExceptions;
+using Path = System.IO.Path;
 
 namespace AniTool
 {
@@ -55,7 +56,11 @@ namespace AniTool
         /// </summary>
         private void ClearFilesAndCreateDirectory()
         {
-            System.IO.DirectoryInfo di = new(@$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages");
+            string workingDirectory = Environment.CurrentDirectory;
+            string dir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string resourceDir = Path.Combine(dir, "resources");
+            
+            System.IO.DirectoryInfo di = new(@$"{resourceDir}\NovelImages");
             if (!di.Exists)
             {
                 di.Create();
@@ -74,9 +79,13 @@ namespace AniTool
         /// </summary>
         private void SearchResults()
         {
+            string workingDirectory = Environment.CurrentDirectory;
+            string dir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string resourceDir = Path.Combine(dir, "resources");
+            
             status.Text = $"Searching for " + search + "...";
 
-            //Worker thread to search for novels
+            //Worker thread to search for mangas
             BackgroundWorker worker = new BackgroundWorker();   
             worker.DoWork += (sender, e) =>
             {
@@ -116,7 +125,7 @@ namespace AniTool
                         panel.Orientation = Orientation.Vertical;
                         panel.Margin = new Thickness(0, 0, 0, 30);
                         Image image = new Image() { Width = 100, Height = 100, Name = $"image{number}", Cursor = Cursors.Hand };
-                        image.Source = GetImageFromStream(@$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}");
+                        image.Source = GetImageFromStream(@$"{resourceDir}\NovelImages\{number}.{type}");
 
 
                         image.Stretch = Stretch.Uniform;
@@ -175,9 +184,13 @@ namespace AniTool
         /// <param name="url"></param>
         private void DownloadImage(int number, string type, string url)
         {
+            string workingDirectory = Environment.CurrentDirectory;
+            string dir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string resourceDir = Path.Combine(dir, "resources");
+            
             using (WebClient client = new())
             {
-                client.DownloadFile(new Uri(url), @$"C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\NovelImages\{number}.{type}");
+                client.DownloadFile(new Uri(url), @$"{resourceDir}\NovelImages\{number}.{type}");
             }
         }
 
