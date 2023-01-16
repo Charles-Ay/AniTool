@@ -12,7 +12,7 @@
             <!--Novels-->
             <TabItem x:Name="novelsTab" >
                 <TabItem.Header>
-                    <Image Width="20" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\novel.png"/>
+                    <Image x:Name="novelImg" Width="20" Source="{Binding NovelImgBinding}"/>
                 </TabItem.Header>
                 <Grid x:Name="mainNovelGrid">
                     <Grid.RowDefinitions>
@@ -57,7 +57,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <Image x:Name="searchNovelBtn" Cursor="Hand" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\search.png" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="SearchNovelBtn_MouseDown"></Image>
+                        <Image x:Name="searchNovelBtn" Cursor="Hand" Source="{Binding SearchImgBinding}" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="SearchNovelBtn_MouseDown"></Image>
                         <Line X1="0" X2="10" Grid.Column="0" Grid.Row="4" StrokeThickness="5" Stretch="Uniform" Grid.ColumnSpan="8">
                             <Line.Stroke>
                                 <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
@@ -80,7 +80,7 @@
             <!--Manga-->
             <TabItem x:Name="mangaTab">
                 <TabItem.Header>
-                    <Image Width="30" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\manga.png"/>
+                    <Image x:Name="mangaImg" Width="30" Source="{Binding MangaImgBinding}"/>
                 </TabItem.Header>
                 <Grid x:Name="mainMangaGrid">
                     <Grid.RowDefinitions>
@@ -125,7 +125,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <Image x:Name="searchMangaBtn" Cursor="Hand" Source="C:\Users\charl\Documents\Programming\C#\WPF\AniTool\AniTool\resources\search.png" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="SearchMangaBtn_MouseDown"></Image>
+                        <Image x:Name="searchMangaBtn" Cursor="Hand" Source="{Binding SearchImgBinding}" Grid.Column="7" Grid.Row="1" Width="20" Height="20" Mouse.MouseDown="SearchMangaBtn_MouseDown"></Image>
                         <Line X1="0" X2="10" Grid.Column="0" Grid.Row="4" StrokeThickness="5" Stretch="Uniform" Grid.ColumnSpan="8">
                             <Line.Stroke>
                                 <LinearGradientBrush StartPoint="0,1" EndPoint="1,1">
