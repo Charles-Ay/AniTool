@@ -16,8 +16,30 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="novelImage" Height="100" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20"/>
-        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="ADD DESCRIPTION LATER" VerticalAlignment="Center"/>
+        <Grid Grid.Row="0" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="novelImage" Height="100" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBlock x:Name="novelDescriptionText" Grid.Column="1" Margin="20,0,20,0" HorizontalAlignment="Center" TextWrapping="Wrap" Text="ADD DESCRIPTION LATER" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="From" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="startChapterBox" Width="60" Height="28" VerticalContentAlignment="Center" Margin="0,0,12,0"/>
+                <TextBlock Text="To" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="endChapterBox" Width="60" Height="28" VerticalContentAlignment="Center" Margin="0,0,12,0"/>
+                <Button x:Name="exportEpubBtn" Content="Export EPUB" Padding="10,4" Click="ExportEpubBtn_Click"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Delay ms" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox x:Name="delayMsBox" Width="60" Height="28" VerticalContentAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock Text="Max/min" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox x:Name="maxPerMinuteBox" Width="60" Height="28" VerticalContentAlignment="Center" Margin="0,0,12,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
         <Grid Grid.Row="1">
             <ScrollViewer x:Name="novelScroll">
                 <!--Code is in C#-->
